@@ -46,13 +46,30 @@ describe("hello world contract test suite", () => {
       assert.equal(result, "(ok (1 -2))");
     });
 
-    it("should return valid result for eqeal points", async () => {
+    it("should return valid result for equal points", async () => {
       const query = ellipticCurveClient.createQuery({
         method: { name: "ecc-add", args: ["2", "1", "2", "1"] },
       });
       const receipt = await ellipticCurveClient.submitQuery(query);
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok (32 -181))");
+    });
+
+    it("should return 0 0 in case of equal points and y1=y2=0", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: { name: "ecc-add", args: ["1", "0", "1", "0"] },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (0 0))");
+    });
+    it("should return 0 0 in case of different points and x1=x2", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: { name: "ecc-add", args: ["1", "2", "1", "4"] },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (0 0))");
     });
   });
 
