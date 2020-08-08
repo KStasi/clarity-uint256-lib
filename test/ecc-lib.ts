@@ -28,13 +28,22 @@ describe("hello world contract test suite", () => {
       await ellipticCurveClient.deployContract();
     });
 
-    it("should return 'hello world'", async () => {
+    it("should return valid result for typical cases", async () => {
       const query = ellipticCurveClient.createQuery({
         method: { name: "ecc-add", args: ["1", "2", "3", "4"] },
       });
       const receipt = await ellipticCurveClient.submitQuery(query);
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok (-3 2))");
+    });
+
+    it("should return valid result for tangent", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: { name: "ecc-add", args: ["-1", "4", "1", "2"] },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (1 -2))");
     });
   });
 
