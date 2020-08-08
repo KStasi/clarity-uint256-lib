@@ -45,6 +45,15 @@ describe("hello world contract test suite", () => {
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok (1 -2))");
     });
+
+    it("should return valid result for eqeal points", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: { name: "ecc-add", args: ["2", "1", "2", "1"] },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (32 -181))");
+    });
   });
 
   after(async () => {
