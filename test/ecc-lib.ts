@@ -73,7 +73,7 @@ describe("hello world contract test suite", () => {
       });
       const receipt = await ellipticCurveClient.submitQuery(query);
       const result = Result.unwrap(receipt);
-      assert.equal(result, "(ok (tuple (x -7) (y -35)))");
+      assert.equal(result, "(ok (tuple (x 32) (y -181)))");
     });
 
     it("should return 0 0 in case of equal points and y1=y2=0", async () => {
@@ -111,7 +111,7 @@ describe("hello world contract test suite", () => {
       });
       const receipt = await ellipticCurveClient.submitQuery(query);
       const result = Result.unwrap(receipt);
-      assert.equal(result, "(ok (tuple (x -7) (y -35)))");
+      assert.equal(result, "(ok (tuple (x 32) (y -181)))");
     });
   });
 
