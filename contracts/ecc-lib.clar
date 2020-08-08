@@ -1,4 +1,4 @@
-(define-data-var empty-buff (buff 256) "")
+(define-data-var empty-buff (buff 256) (keccak256 0))
 (define-data-var tmp int 0)
 (define-data-var result (tuple (x int) (y int)) (tuple (x 0) (y 0)))
 (define-data-var tmp-point (tuple (x int) (y int)) (tuple (x 0) (y 0)))
@@ -19,3 +19,29 @@
             (let ((x (- (- (* m m) (get x p1)) (get x p2)))) 
                 (ok (tuple (x x) (y (- (* m (- (get x p1) x)) (get y p1))))))))
     ))
+
+(define-private (mul-bit (b (buff 1))) 
+(begin
+    (if (is-eq (mod (var-get tmp) 2) 1)
+        (var-set result 
+                (unwrap-panic (ecc-add 
+                    (var-get result) 
+                    (var-get tmp-point))))
+        false
+        )
+    (var-set tmp-point 
+        (unwrap-panic (ecc-add 
+            (var-get tmp-point) 
+            (var-get tmp-point))))
+    (var-set tmp 
+        (/ (var-get tmp) 2)) 
+    ))
+
+(define-public (ecc-mul (p (tuple (x int) (y int)))
+                        (scalar int))
+(begin (var-set tmp scalar)
+    (var-set result (tuple (x 0) (y 0)))
+    (var-set tmp-point p)
+    (map mul-bit 
+        (var-get empty-buff))
+        (ok (var-get result))))

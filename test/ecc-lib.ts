@@ -64,6 +64,18 @@ describe("hello world contract test suite", () => {
       assert.equal(result, "(ok (tuple (x 32) (y -181)))");
     });
 
+    it("should return valid result for 0 0 points", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: {
+          name: "ecc-add",
+          args: ["(tuple (x 0) (y 0))", "(tuple (x 32) (y -181))"],
+        },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (tuple (x -7) (y -35)))");
+    });
+
     it("should return 0 0 in case of equal points and y1=y2=0", async () => {
       const query = ellipticCurveClient.createQuery({
         method: {
@@ -75,6 +87,7 @@ describe("hello world contract test suite", () => {
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok (tuple (x 0) (y 0)))");
     });
+
     it("should return 0 0 in case of different points and x1=x2", async () => {
       const query = ellipticCurveClient.createQuery({
         method: {
@@ -85,6 +98,20 @@ describe("hello world contract test suite", () => {
       const receipt = await ellipticCurveClient.submitQuery(query);
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok (tuple (x 0) (y 0)))");
+    });
+  });
+
+  describe("deploying an instance of the contract", () => {
+    it("should return valid result for typical cases", async () => {
+      const query = ellipticCurveClient.createQuery({
+        method: {
+          name: "ecc-mul",
+          args: ["(tuple (x 2) (y 1))", "2"],
+        },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (tuple (x -7) (y -35)))");
     });
   });
 
