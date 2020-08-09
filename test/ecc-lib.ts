@@ -6,7 +6,7 @@ import {
 } from "@blockstack/clarity";
 import { assert } from "chai";
 
-describe("hello world contract test suite", () => {
+describe("elliptic curve contract test suite", () => {
   let ellipticCurveClient: Client;
   let provider: Provider;
 
