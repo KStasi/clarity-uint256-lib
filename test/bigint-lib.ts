@@ -53,12 +53,6 @@ describe("big-uint contract test suite", () => {
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b =
         "83e8223b132b0fa8014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
-      console.log(hexToUint256(a));
-      console.log(hexToUint256(b));
-      console.log((BigInt("0x" + a) - BigInt("0x" + b)).toString());
-      console.log(
-        hexToUint256((BigInt("0x" + a) - BigInt("0x" + b)).toString())
-      );
       const query = bigIntClient.createQuery({
         method: {
           name: "uint256-sub",
@@ -71,6 +65,25 @@ describe("big-uint contract test suite", () => {
         result,
         "(ok (tuple (i0 u3158413062041684229) (i1 u11566688074520678948) (i2 u6940689772059988022) (i3 u5867674202036624031)))"
       );
+    });
+  });
+
+  describe("deploying an instance of the contract", () => {
+    it("should fail substraction if result is negative", async () => {
+      let b =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let a =
+        "83e8223b132b0fa8014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-sub",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(err 1)");
     });
   });
 
