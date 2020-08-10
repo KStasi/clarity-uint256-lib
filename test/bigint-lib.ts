@@ -66,6 +66,32 @@ describe("big-uint contract test suite", () => {
         "(ok (tuple (i0 u3158413062041684229) (i1 u11566688074520678948) (i2 u6940689772059988022) (i3 u5867674202036624031)))"
       );
     });
+    it("should return true for uint256 equal 0", async () => {
+      let a = "00";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-is-zero",
+          args: [hexToUint256(a)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok true)");
+    });
+
+    it("should return false for uint256 bot equal 0", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-is-zero",
+          args: [hexToUint256(a)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok false)");
+    });
   });
 
   describe("deploying an instance of the contract", () => {

@@ -35,6 +35,17 @@
         (if (> (get i1 a) (get i1 b)) 1 -1))
     (if (> (get i0 a) (get i0 b)) 1 -1))))
 
+(define-public (uint256-is-zero (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(ok (if (is-eq (get i0 a) u0)
+    (if (is-eq (get i1 a) u0)
+        (if (is-eq (get i2 a) u0)
+            (if (is-eq (get i3 a) u0)
+                true
+                false)
+            false)
+        false)
+    false)))
+
 
 (define-public (uint256-sub (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
