@@ -99,7 +99,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok true)");
     });
 
-    it("should return false for uint256 bot equal 0", async () => {
+    it("should return false for uint256 bit equal 0", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       const query = bigIntClient.createQuery({
@@ -111,6 +111,20 @@ describe("big-uint contract test suite", () => {
       const receipt = await bigIntClient.submitQuery(query);
       const result = Result.unwrap(receipt);
       assert.equal(result, "(ok false)");
+    });
+
+    it("should return false for uint256 bit equal 0", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-bits",
+          args: [hexToUint256(a)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok u256)");
     });
   });
 
