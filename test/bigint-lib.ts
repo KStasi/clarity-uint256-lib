@@ -86,6 +86,24 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for div", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let b = "208e440eb14c0780";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-div",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u5) (i1 u7343362234578611740) (i2 u10822994926559106398) (i3 u7674250338629420387)))"
+      );
+    });
+
     it("should return true for uint256 equal 0", async () => {
       let a = "00";
       const query = bigIntClient.createQuery({
