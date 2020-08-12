@@ -66,6 +66,22 @@ describe("big-uint contract test suite", () => {
         "(ok (tuple (i0 u3158413062041684229) (i1 u11566688074520678948) (i2 u6940689772059988022) (i3 u5867674202036624031)))"
       );
     });
+    it("should return valid result for sub", async () => {
+      let a = "1805be729eafb6751f92624433378e6286401d81af2e18c4";
+      let b = "1805be729eafb674f9cbf0c11ee485fa6dd3bae110df0800";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-sub",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u0) (i2 u2721987832587683944) (i3 u1759889996385292484)))"
+      );
+    });
 
     it("should return valid result for mul", async () => {
       let a =
@@ -101,6 +117,42 @@ describe("big-uint contract test suite", () => {
       assert.equal(
         result,
         "(ok (tuple (i0 u5) (i1 u7343362234578611740) (i2 u10822994926559106398) (i3 u7674250338629420387)))"
+      );
+    });
+
+    it("should return valid result for div", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let b = "25edd4eea75b888e208e440eb14c0780";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-div",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u4) (i2 u11683287130199150832) (i3 u18371914043937723798)))"
+      );
+    });
+
+    it("should return valid result for mul-short", async () => {
+      let a = "25edd4eea75b888e208e440eb14c0780";
+      let b = "u11683287130199150833";
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-mul-short",
+          args: [hexToUint256(a), b],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u1730999031291688565) (i2 u2286075644603272840) (i3 u10259761731834941312)))"
       );
     });
 
