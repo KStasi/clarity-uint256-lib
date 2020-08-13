@@ -177,6 +177,24 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for unsafe lshift-1", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-lshift-1-unsafe",
+          args: [hexToUint256(a)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u6331648856363560022) (i1 u15052641011873601073) (i2 u4836882221209422946) (i3 u4106780743919005967)))"
+      );
+    });
+
     it("should return valid result for mul-short", async () => {
       let a = "25edd4eea75b888e208e440eb14c0780";
       let b = "u11683287130199150833";
