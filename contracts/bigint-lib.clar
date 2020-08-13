@@ -120,6 +120,18 @@
             (i2 (/ i2 r)) 
             (i3 (/ i3 r))))))))))
 
+(define-public (uint256-check-bit (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (b uint))
+(if (> b u256) (err 1)
+(let ((v (if (is-eq (/ b u64) u3) 
+    (get i0 a) 
+    (if (is-eq (/ b u64) u2) 
+        (get i0 a) 
+        (if (is-eq (/ b u64) u1) 
+            (get i2 a) 
+            (get i3 a))))))
+    (ok (mod (/ v (pow u2 (mod b u64))) u2)))
+))
+
 (define-public (uint256-sub (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
 (if (unwrap-panic (uint256> a b))
