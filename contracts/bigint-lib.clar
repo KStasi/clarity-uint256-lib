@@ -3,10 +3,6 @@
 (define-constant uint64-max u18446744073709551615)
 (define-constant uint64-max-limit u18446744073709551616)
 (define-constant uint256-zero (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))
-(define-data-var btmp bool false)
-(define-data-var utmp uint u0)
-(define-data-var uint256-tmp0 (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)) uint256-zero)
-(define-data-var uint256-tmp1 (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)) uint256-zero)
 
 (define-public (uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
@@ -34,6 +30,10 @@
             (if (> (get i2 a) (get i2 b)) 1 -1))
         (if (> (get i1 a) (get i1 b)) 1 -1))
     (if (> (get i0 a) (get i0 b)) 1 -1))))
+
+(define-public (uint256-add-short (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+                            (b uint))
+(uint256-add a (tuple (i0 u0) (i1 u0) (i2 (/ b uint64-max-limit)) (i3 (mod b uint64-max-limit)))))
 
 (define-public (uint256-is-eq (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
@@ -89,6 +89,23 @@
 
 (define-public (uint256-rshift-64-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 (ok (tuple (i0 (get i1 a)) (i1 (get i2 a)) (i2 (get i3 a)) (i3 u0))))
+
+(define-public (uint256-rshift-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+                               (b uint))
+
+(let ((r (pow u2 b)))
+    (let ((i3 (* (get i3 a) r)))
+        (let ((i2 (+ (* (get i2 a) r)
+            (if (> i3 uint64-max) (/ i3 uint64-max-limit) u0))))
+        (let ((i1 (+ (* (get i1 a) r)
+            (if (> i2 uint64-max) (/ i2 uint64-max-limit) u0))))
+        (let ((i0 (+ (* (get i0 a) r)
+            (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
+        (ok (tuple 
+            (i0 i0)
+            (i1 (if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
+            (i2 (if (> (/ i2 uint64-max) u0) (mod i2 uint64-max-limit) i2)) 
+            (i3 (if (> (/ i3 uint64-max) u0) (mod i3 uint64-max-limit) i3))))))))))
 
 (define-public (uint256-sub (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
@@ -188,8 +205,7 @@
                             (unwrap-panic (uint256-mul-short
                                 b
                                 i2))))))
-                            (+ (* (get i2 t) uint64-max-limit) (get i3 t))
-                            u50211812919496365913884082512547745988)))
+                            (+ (* (get i2 t) uint64-max-limit) (get i3 t)))))
                         (let ((i3 (let ((t3 (/ r2 (get i2 b))))
                             (if (unwrap-panic (uint256> 
                                 (unwrap-panic (uint256-mul-short
@@ -202,5 +218,30 @@
                             (i1 (/ i1 b23)) 
                             (i2 i2) 
                             (i3 i3)))))) )
-                uint256-zero)))
-        )))
+                (if (is-eq b-len u3) 
+                    (let ((i0 u0) (i1 u0))
+                        (let ((i2 (let ((t2 (/ (get i0 a) (get i1 b))))
+                            (if (unwrap-panic (uint256> 
+                                (unwrap-panic (uint256-mul-short
+                                    b
+                                    t2)) 
+                                (tuple (i0 u0) (i1 (get i0 a)) (i2 (get i1 a)) (i3 (get i2 a)))))
+                                (- t2 u1) t2))))
+                            (let ((r2 (unwrap-panic (uint256-sub 
+                                (tuple (i0 u0) (i1 (get i0 a)) (i2 (get i1 a)) (i3 (get i2 a)))
+                                (unwrap-panic (uint256-mul-short
+                                    b
+                                    i2))))))
+                            (let ((i3 (let ((t3 (/ (+ (* (get i1 r2) uint64-max-limit) (get i2 r2)) (get i1 b))))
+                                (if (unwrap-panic (uint256> 
+                                    (unwrap-panic (uint256-mul-short
+                                        b
+                                        t3)) 
+                                    (unwrap-panic (uint256-add-short r2 (get i3 a)))))
+                                    (- t3 u1) t3))))
+                                (tuple 
+                                (i0 i0) 
+                                (i1 i1) 
+                                (i2 i2) 
+                                (i3 i3))))) )
+                    uint256-zero)))))))

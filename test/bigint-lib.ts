@@ -139,6 +139,44 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for div", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let b = "014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-div",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u0) (i2 u137) (i3 u16039705086760724630)))"
+      );
+    });
+
+    it("should return valid result for unsafe rshift", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let b = "u2";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-rshift-unsafe",
+          args: [hexToUint256(a), b],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u50653190850908480182) (i1 u9740663652731498890) (i2 u1801569622256280337) (i3 u14407501877642496124)))"
+      );
+    });
+
     it("should return valid result for mul-short", async () => {
       let a = "25edd4eea75b888e208e440eb14c0780";
       let b = "u11683287130199150833";
