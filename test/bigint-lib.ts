@@ -158,6 +158,25 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for mod", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let b = "014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-mod",
+          args: [hexToUint256(a), hexToUint256(b)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u32943242211900740) (i2 u10784891128042257264) (i3 u6497780345443810591)))"
+      );
+    });
+
     it("should return valid result for unsafe rshift", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
@@ -362,5 +381,3 @@ describe("big-uint contract test suite", () => {
     await provider.close();
   });
 });
-// 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100010011101111010011000011110101100101101011110011001100010100010010110
-// 110000100101110101010001000111000011110100010001110001111110100011100110111101100010101111000110100100110011101010101001111010000001111110101000010101010001000011011010010101010011111
