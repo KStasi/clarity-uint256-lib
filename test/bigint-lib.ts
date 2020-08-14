@@ -249,6 +249,24 @@ describe("big-uint contract test suite", () => {
     it("should return valid result for check bit", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
+      let aBin =
+        "1010111110111101000100100010110100111100000111011101100010101101101000011100101101110010011111101111100001100111101011000110001010000110010000000001110110000001101011110010111000011000110001000111000111111100011011101010011111100111011010011110001000011111";
+      for (let i = 0; i < aBin.length; i++) {
+        const query = bigIntClient.createQuery({
+          method: {
+            name: "uint256-check-bit",
+            args: [hexToUint256(a), `u${i}`],
+          },
+        });
+        const receipt = await bigIntClient.submitQuery(query);
+        const result = Result.unwrap(receipt);
+        assert.equal(result, `(ok u${aBin[aBin.length - i - 1]})`);
+      }
+    });
+
+    it("should return valid result for check bit", async () => {
+      let a =
+        "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "u255";
 
       const query = bigIntClient.createQuery({

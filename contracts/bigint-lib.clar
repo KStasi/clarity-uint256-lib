@@ -9,18 +9,17 @@
 
 (define-public (uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
-
-(let ((i3 (+ (get i3 a) (get i3 b))))
-    (let ((i2 (+ (get i2 a) (get i2 b)
-        (if (> i3 uint64-max) (/ i3 uint64-max-limit) u0))))
-    (let ((i1 (+ (get i1 a) (get i1 b)
-        (if (> i2 uint64-max) (/ i2 uint64-max-limit) u0))))
-    (let ((i0 (+ (get i0 a) (get i0 b)
-        (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
-    (ok (tuple (i0 i0) 
-        (i1 ( if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
-        (i2 ( if (> (/ i2 uint64-max) u0) (mod i2 uint64-max-limit) i2)) 
-        (i3 ( if (> (/ i3 uint64-max) u0) (mod i3 uint64-max-limit) i3)))))))))
+    (let ((i3 (+ (get i3 a) (get i3 b))))
+        (let ((i2 (+ (get i2 a) (get i2 b)
+            (if (> i3 uint64-max) (/ i3 uint64-max-limit) u0))))
+        (let ((i1 (+ (get i1 a) (get i1 b)
+            (if (> i2 uint64-max) (/ i2 uint64-max-limit) u0))))
+        (let ((i0 (+ (get i0 a) (get i0 b)
+            (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
+        (ok (tuple (i0 i0) 
+            (i1 ( if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
+            (i2 ( if (> (/ i2 uint64-max) u0) (mod i2 uint64-max-limit) i2)) 
+            (i3 ( if (> (/ i3 uint64-max) u0) (mod i3 uint64-max-limit) i3)))))))))
 
 (define-public (uint256-cmp (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
@@ -139,7 +138,7 @@
 (let ((v (if (is-eq (/ b u64) u3) 
     (get i0 a) 
     (if (is-eq (/ b u64) u2) 
-        (get i0 a) 
+        (get i1 a) 
         (if (is-eq (/ b u64) u1) 
             (get i2 a) 
             (get i3 a))))))
@@ -298,7 +297,7 @@
         (p (+ (get p val) u1)) 
         (a (get a val)) 
         (b (get b val)) 
-        (q uint256-zero)
+        (q (get q val))
         (r (unwrap-panic (uint256-add-short 
             t 
             (unwrap-panic (uint256-check-bit (get a val) (- u255 (get p val))))))))
@@ -312,10 +311,6 @@
             t 
             (unwrap-panic (uint256-check-bit (get a val) (- u255 (get p val))))))
             (get b val))))))))
-;; reverse bits order 
-;; for num
-;;  bit i rshift to (256 - i)
-;;  left shift num; 
 
 (define-public (uint256-div (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
