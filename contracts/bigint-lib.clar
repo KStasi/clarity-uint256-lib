@@ -1,8 +1,10 @@
 (define-constant iter-buff-32 (keccak256 0))
 (define-constant iter-buff-64 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
+(define-constant iter-buff-256 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
 (define-constant uint64-max u18446744073709551615)
 (define-constant uint64-max-limit u18446744073709551616)
 (define-constant uint256-zero (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))
+(define-constant uint256-one (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u1)))
 (define-data-var tmp-uint256 (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)) uint256-zero)
 
 (define-public (uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
@@ -93,20 +95,32 @@
 
 (define-public (uint256-rshift-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                                (b uint))
-
-(let ((r (pow u2 b)))
-    (let ((i3 (* (get i3 a) r)))
-        (let ((i2 (+ (* (get i2 a) r)
-            (if (> i3 uint64-max) (/ i3 uint64-max-limit) u0))))
-        (let ((i1 (+ (* (get i1 a) r)
-            (if (> i2 uint64-max) (/ i2 uint64-max-limit) u0))))
-        (let ((i0 (+ (* (get i0 a) r)
-            (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
-        (ok (tuple 
-            (i0 i0)
-            (i1 (if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
-            (i2 (if (> (/ i2 uint64-max) u0) (mod i2 uint64-max-limit) i2)) 
-            (i3 (if (> (/ i3 uint64-max) u0) (mod i3 uint64-max-limit) i3))))))))))
+(if (< b u128)
+    (let ((r (pow u2 b)))
+        (let ((i3 (* (get i3 a) r)))
+            (let ((i2 (+ (* (get i2 a) r)
+                (if (> i3 uint64-max) (/ i3 uint64-max-limit) u0))))
+            (let ((i1 (+ (* (get i1 a) r)
+                (if (> i2 uint64-max) (/ i2 uint64-max-limit) u0))))
+            (let ((i0 (+ (* (get i0 a) r)
+                (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
+            (ok (tuple 
+                (i0 i0)
+                (i1 (if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
+                (i2 (if (> (/ i2 uint64-max) u0) (mod i2 uint64-max-limit) i2)) 
+                (i3 (if (> (/ i3 uint64-max) u0) (mod i3 uint64-max-limit) i3)))))))))
+    (if (< b u256)
+        (let ((r (pow u2 (- b u128))))
+                (let ((i1 (* (get i3 a) r)))
+                (let ((i0 (+ (* (get i2 a) r)
+                    (if (> i1 uint64-max) (/ i1 uint64-max-limit) u0))))
+                (ok (tuple 
+                    (i0 (if (> (/ i0 uint64-max) u0) (mod i0 uint64-max-limit) i0))
+                    (i1 (if (> (/ i1 uint64-max) u0) (mod i1 uint64-max-limit) i1)) 
+                    (i2 u0) 
+                    (i3 u0))))))
+        (ok uint256-zero))
+    ))
 
 (define-public (uint256-lshift-1-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 (let ((r u2))
@@ -279,19 +293,25 @@
                                 (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                                 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))))
 (let ((t (unwrap-panic (uint256-rshift-unsafe (get r val) u1))))
-    (if (unwrap-panic (uint256> t (get b val)))
+    (if (unwrap-panic (uint256< t (get b val)))
     (tuple 
         (p (+ (get p val) u1)) 
         (a (get a val)) 
         (b (get b val)) 
         (q uint256-zero)
-        (r t))
+        (r (unwrap-panic (uint256-add-short 
+            t 
+            (unwrap-panic (uint256-check-bit (get a val) (- u255 (get p val))))))))
     (tuple 
         (p (+ (get p val) u1)) 
         (a (get a val)) 
         (b (get b val)) 
-        (q uint256-zero)
-        (r t)))))
+        (q (unwrap-panic (uint256-add (get q val)
+            (unwrap-panic (uint256-rshift-unsafe uint256-one (- u255 (get p val)))))))
+        (r (unwrap-panic (uint256-sub (unwrap-panic (uint256-add-short 
+            t 
+            (unwrap-panic (uint256-check-bit (get a val) (- u255 (get p val))))))
+            (get b val))))))))
 ;; reverse bits order 
 ;; for num
 ;;  bit i rshift to (256 - i)
@@ -302,5 +322,5 @@
 (if (unwrap-panic (uint256-is-zero b))
     (err 1)
     (ok (begin 
-        (fold loop-div-iter iter-buff-64 (tuple (p u0) (a a) (b b) (q uint256-zero) (r uint256-zero)))
+        (get q (fold loop-div-iter iter-buff-256 (tuple (p u0) (a a) (b b) (q uint256-zero) (r uint256-zero))))
         ))))
