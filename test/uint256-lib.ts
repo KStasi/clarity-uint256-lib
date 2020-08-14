@@ -14,8 +14,8 @@ describe("big-uint contract test suite", () => {
   before(async () => {
     provider = await ProviderRegistry.createProvider();
     bigIntClient = new Client(
-      "SZ2J6ZY48GV1EZ5V2V5RB9MP66SW86PYKKQ9H6DPR.bigint-lib",
-      "bigint-lib",
+      "SZ2J6ZY48GV1EZ5V2V5RB9MP66SW86PYKKQ9H6DPR.uint256-lib",
+      "uint256-lib",
       provider
     );
   });
