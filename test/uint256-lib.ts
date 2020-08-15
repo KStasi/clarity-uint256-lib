@@ -214,6 +214,21 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for div", async () => {
+      let a = "6286466964a793";
+      let m = "1c8abe6e9a3107";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-div",
+          args: [hexToUint256(a), hexToUint256(m)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(result, "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u3)))");
+    });
+
     it("should return valid result for uint to uint256", async () => {
       let m = "u100000000000";
 
