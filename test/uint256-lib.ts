@@ -177,6 +177,60 @@ describe("big-uint contract test suite", () => {
       );
     });
 
+    it("should return valid result for mulmod", async () => {
+      let a = "7fffffffffffffff";
+      let b = "7fffffffffffffff";
+      let m = "u100000000000";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-mul-mod",
+          args: [hexToUint256(a), hexToUint256(b), m],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u84232501249)))"
+      );
+    });
+
+    it("should return valid result for mod", async () => {
+      let a = "7fffffffffffffff";
+      let m = "174876e800";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint256-mod",
+          args: [hexToUint256(a), hexToUint256(m)],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u36854775807)))"
+      );
+    });
+
+    it("should return valid result for uint to uint256", async () => {
+      let m = "u100000000000";
+
+      const query = bigIntClient.createQuery({
+        method: {
+          name: "uint-to-uint256",
+          args: [m],
+        },
+      });
+      const receipt = await bigIntClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u100000000000)))"
+      );
+    });
+
     it("should return valid result for unsafe rshift", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
