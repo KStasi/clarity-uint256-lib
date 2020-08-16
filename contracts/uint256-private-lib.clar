@@ -87,10 +87,10 @@
         u3) 
     u4))
 
-(define-private (uint256-rshift-64-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(define-private (uint256-rshift-64-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 (tuple (i0 (get i1 a)) (i1 (get i2 a)) (i2 (get i3 a)) (i3 u0)))
 
-(define-private (uint256-rshift-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+(define-private (uint256-rshift-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                                (b uint))
 (if (< b u128)
     (let ((r (pow u2 b)))
@@ -119,7 +119,7 @@
         uint256-zero)
     ))
 
-(define-private (uint256-lshift-1-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(define-private (uint256-lshift-1-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 (let ((r u2))
     (let ((i0 (get i0 a)))
         (let ((i1 (+ (* (mod i0 r) uint64-max-limit) (get i1 a))))
@@ -217,7 +217,7 @@
                                 (r (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                                 (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                                 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))))
-(let ((t (uint256-rshift-unsafe (get r val) u1)))
+(let ((t (uint256-rshift-overflow (get r val) u1)))
     (if (uint256< t (get b val))
     (tuple 
         (p (+ (get p val) u1)) 
@@ -232,7 +232,7 @@
         (a (get a val)) 
         (b (get b val)) 
         (q (uint256-add (get q val)
-            (uint256-rshift-unsafe uint256-one (- u255 (get p val)))))
+            (uint256-rshift-overflow uint256-one (- u255 (get p val)))))
         (r  (uint256-sub (uint256-add-short 
             t 
             (uint256-check-bit (get a val) (- u255 (get p val))))
@@ -250,7 +250,7 @@
     uint256-zero
     (get r (fold loop-div-iter iter-buff-256 (tuple (p u0) (a a) (b b) (q uint256-zero) (r uint256-zero))))))
 
-(define-private (uint512-to-uint256-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint) (i4 uint) (i5 uint) (i6 uint) (i7 uint))))
+(define-private (uint512-to-uint256-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint) (i4 uint) (i5 uint) (i6 uint) (i7 uint))))
     (tuple 
     (i0 (get i4 a))
     (i1 (get i5 a)) 
@@ -270,7 +270,7 @@
                             (m (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
     (let ((a-mod (uint256-mod a m)) (b-mod (uint256-mod b m)))
-    (uint256-mod (uint512-to-uint256-unsafe 
+    (uint256-mod (uint512-to-uint256-overflow 
         (uint256-mul 
             a-mod  
             b-mod)) m)))

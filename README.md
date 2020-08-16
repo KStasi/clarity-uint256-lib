@@ -10,8 +10,9 @@ There are two approaches to use the lib:
 
 # Supported Methods
 
-(uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
-(b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+`(uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))`:
+
+compute `(a + b)` where the addition is performed on uint256 and the result is up to 256 bits long. Asserts if `a`, `b` or result is bigger than uint256
 
 (uint256-cmp (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
@@ -33,12 +34,12 @@ There are two approaches to use the lib:
 
 (uint256-bits-64 (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
-(uint256-rshift-64-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(uint256-rshift-64-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
-(uint256-rshift-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+(uint256-rshift-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b uint))
 
-(uint256-lshift-1-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(uint256-lshift-1-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
 (uint256-check-bit (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (b uint))
 
@@ -57,7 +58,7 @@ There are two approaches to use the lib:
 (uint256-mod (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
-(uint512-to-uint256-unsafe (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint) (i4 uint) (i5 uint) (i6 uint) (i7 uint))))
+(uint512-to-uint256-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint) (i4 uint) (i5 uint) (i6 uint) (i7 uint))))
 
 (uint-to-uint256 (a uint))
 
@@ -74,7 +75,7 @@ There are two approaches to use the lib:
 
 # Miscellaneous
 
-Working with **Clarity** I felt need in some syntactic sugar that would make code more readable:
+Working with **Clarity** I felt need in some syntactic sugar and standarts that would make code more readable:
 
 - Type declaration in order to clearly see the same types. For instance:
 
@@ -89,3 +90,5 @@ Working with **Clarity** I felt need in some syntactic sugar that would make cod
 ```
 
 - Code style standart. It's not clear how to indent and wrap code to make readable for others. For instance, Golang has such a utill as `fmt` that solves the issue by formating code and teach everybody write standartized code.
+
+- Better docs and tutorials.

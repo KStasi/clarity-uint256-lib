@@ -253,7 +253,7 @@ describe("big-uint contract test suite", () => {
 
       const query = bigIntClient.createQuery({
         method: {
-          name: "uint256-rshift-unsafe",
+          name: "uint256-rshift-overflow",
           args: [hexToUint256(a), b],
         },
       });
@@ -272,7 +272,7 @@ describe("big-uint contract test suite", () => {
 
       const query = bigIntClient.createQuery({
         method: {
-          name: "uint256-rshift-unsafe",
+          name: "uint256-rshift-overflow",
           args: [hexToUint256(a), b],
         },
       });
@@ -291,7 +291,7 @@ describe("big-uint contract test suite", () => {
 
       const query = bigIntClient.createQuery({
         method: {
-          name: "uint256-rshift-unsafe",
+          name: "uint256-rshift-overflow",
           args: [hexToUint256(a), b],
         },
       });
@@ -306,7 +306,7 @@ describe("big-uint contract test suite", () => {
 
       const query = bigIntClient.createQuery({
         method: {
-          name: "uint256-lshift-1-unsafe",
+          name: "uint256-lshift-1-overflow",
           args: [hexToUint256(a)],
         },
       });
