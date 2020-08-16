@@ -142,6 +142,26 @@ describe("elliptic curve contract test suite", () => {
     });
   });
 
+  describe("deploying an instance of the contract", () => {
+    it("should return valid result for typical cases", async () => {
+      let a = "02";
+      let b = "01";
+
+      const query = ellipticCurveClient.createQuery({
+        method: {
+          name: "ecc-mul",
+          args: [`(tuple (x ${hexToUint256(a)}) (y ${hexToUint256(b)}))`, `u2`],
+        },
+      });
+      const receipt = await ellipticCurveClient.submitQuery(query);
+      const result = Result.unwrap(receipt);
+      assert.equal(
+        result,
+        "(ok (tuple (x (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u32))) (y (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u179)))))"
+      );
+    });
+  });
+
   after(async () => {
     await provider.close();
   });
