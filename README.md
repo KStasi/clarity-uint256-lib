@@ -1,5 +1,12 @@
 This project is meant to be used as a library for uint256.
 Many blockchain-related services use uint256 math meanwhile Clarity only supports uint up to 128-bits long.
+`uint256` is declared as tuple of 4 uint64:
+
+```
+(tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))
+```
+
+, where i0 contains the most significant bits and i3 - the less significant bits.
 
 # Usage
 
@@ -10,34 +17,73 @@ There are two approaches to use the lib:
 
 # Supported Methods
 
-`(uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))`:
+```
+(uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
-compute `(a + b)` where the addition is performed on uint256 and the result is up to 256 bits long. Asserts if `a`, `b` or result is bigger than uint256
+Computes `(a + b)` where the addition is performed on uint256 and the result is up to 256 bits long. Asserts if `a`, `b` or result is bigger than max uint256.
 
-(uint256-cmp (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
-(b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
-
+```
 (uint256-add-short (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b uint))
+```
+
+Computes `(a + b)` where the addition is performed on uint256 `a` and uint128 `b` the result is up to 256 bits long. Asserts if `a` or result is bigger than max uint256.
+
+```
+(uint256-cmp (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+(b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
+
+Compares `a` and `b` and returns:
+
+- 1 if a > b
+- 0 if a = b
+- -1 if a < b
+
+```
 (uint256-is-eq (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
+Checks if `a` and `b` is equal. Returns boolean.
+
+```
 (uint256> (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
+Checks if `a` is bigger than `b`. Returns boolean.
+
+````
 (uint256< (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
+Checks if `a` is smaller than `b`. Returns boolean.
+
+```
 (uint256-is-zero (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
+Checks if `a` is equal zero. Returns boolean.
+
+```
 (uint256-bits (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
+Calculates the number of bits in `a` (the most significant bit). Returns uint128.
+
+```
 (uint256-bits-64 (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+```
 
-(uint256-rshift-64-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+Calculates the number of set batched of 64bits in `a`. It is quite useful as uint256 is represented as 4 such batches (i0, i1, i2, i3).
 
 (uint256-rshift-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
 (b uint))
+
+(uint256-rshift-64-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
 (uint256-lshift-1-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
 
@@ -79,16 +125,21 @@ Working with **Clarity** I felt need in some syntactic sugar and standarts that 
 
 - Type declaration in order to clearly see the same types. For instance:
 
-```
+````
+
 (type point (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))
+
 ```
 
 - Imports to avoid copying common code. For instance:
 
 ```
+
 (load "/path/to/file")
+
 ```
 
 - Code style standart. It's not clear how to indent and wrap code to make readable for others. For instance, Golang has such a utill as `fmt` that solves the issue by formating code and teach everybody write standartized code.
 
 - Better docs and tutorials.
+```
