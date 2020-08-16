@@ -154,19 +154,19 @@
 
 (define-private (uint256-sub (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
-(if (uint256> a b)
-    (let ((i3 (- (to-int (get i3 a)) (to-int (get i3 b)))))
-        (let ((i2 (- (- (to-int (get i2 a)) (to-int (get i2 b)))
+(let ((i (if (uint256> a b) a b)) (j (if (uint256> a b) b a )))
+    (let ((i3 (- (to-int (get i3 i)) (to-int (get i3 j)))))
+        (let ((i2 (- (- (to-int (get i2 i)) (to-int (get i2 j)))
             (if (< i3 0) 1 0))))
-        (let ((i1 (- (- (to-int (get i1 a)) (to-int (get i1 b))) 
+        (let ((i1 (- (- (to-int (get i1 i)) (to-int (get i1 j))) 
             (if (< i2 0) 1 0))))
-        (let ((i0 (- (- (to-int (get i0 a)) (to-int (get i0 b)))
+        (let ((i0 (- (- (to-int (get i0 i)) (to-int (get i0 j)))
             (if (< i1 0) 1 0))))
             (tuple (i0 (to-uint i0)) 
             (i1 (mod (to-uint (if (< i1 0) (+ (to-int uint64-max-limit) i1) i1)) uint64-max-limit)) 
             (i2 (mod (to-uint (if (< i2 0) (+ (to-int uint64-max-limit) i2) i2)) uint64-max-limit)) 
             (i3 (mod (to-uint (if (< i3 0) (+ (to-int uint64-max-limit) i3) i3)) uint64-max-limit)))))))
-    uint256-zero))
+    ))
 
 (define-private (uint256-mul-short (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b uint))
@@ -284,6 +284,13 @@
             a-mod  
             b-mod)) m)))
 
+(define-private (uint256-mul-mod-short (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
+                            (b uint) 
+                            (m (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+
+    (uint256-mod
+        (uint256-mul-short a b) m))
+
 (define-private (is-zero-point (p (tuple (x (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (y (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))))) 
     (and (uint256-is-zero (get x p))
     (uint256-is-zero (get y p))))
@@ -299,15 +306,23 @@
             (if (uint256-is-zero (get y p1))
                 (ok (tuple (x uint256-zero) (y uint256-zero)))
                 (let 
-                    ((m (uint256-div (uint256-mul-short (uint256-mul-mod (get x p1) (get x p1) zk-p) u3) (uint256-mul-short (get y p1) u2)))) 
-                    (let ((x (uint256-sub (uint256-mul-mod m m zk-p) (uint256-mul-short (get x p1) u2)))) 
-                        (ok (tuple (x x) (y (uint256-sub (uint256-mul-mod m (uint256-sub (get x p1) x) zk-p) (get y p1))))))))
+                    ((m (uint256-div 
+                        (uint256-mul-mod-short (uint256-mul-mod (get x p1) (get x p1) zk-p) u3 zk-p) 
+                        (uint256-mul-mod-short (get y p1) u2 zk-p)))) 
+                    (let ((m1 (uint256-mul-mod m m zk-p)) (m2 (uint256-mul-mod-short (get x p1) u2 zk-p)))
+                        (let ((x (uint256-sub 
+                            m1 
+                            m2)))
+                            (let ((yt (uint256-mul-mod m (uint256-sub (get x p1) x) zk-p))) 
+                                (ok (tuple (x x) (y (uint256-sub yt (get y p1))))))))))
             (if (uint256-is-eq (get x p1) (get x p2)) 
                 (ok (tuple (x uint256-zero) (y uint256-zero)))
-                (let 
-                    ((m (uint256-div (uint256-sub (get y p2) (get y p1)) (uint256-sub (get x p2) (get x p1))))) 
-                    (let ((x (uint256-sub (uint256-sub (uint256-mul-mod m m zk-p) (get x p1)) (get x p2)))) 
-                        (ok (tuple (x x) (y (uint256-sub (uint256-mul-mod m (uint256-sub (get x p1) x) zk-p) (get y p1))))))))
+                (let ((mt (uint256-sub (get x p2) (get x p1))))
+                    (let ((m (uint256-div (uint256-sub (get y p2) (get y p1)) mt)))
+                        (let ((xt (uint256-sub (uint256-mul-mod m m zk-p) (get x p1))))
+                            (let ((x (uint256-sub xt (get x p2))))
+                                (let ((yt (uint256-mul-mod m (uint256-sub (get x p1) x) zk-p)))
+                                    (ok (tuple (x x) (y (uint256-sub yt (get y p1)))))))))))
             ))))
 
 ;; (define-private (mul-bit (b (buff 1))) 
