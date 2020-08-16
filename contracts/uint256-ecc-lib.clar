@@ -1,10 +1,6 @@
 ;; for Y^2 = X^3 + 3
 (define-constant zk-p (tuple (i0 u348699826680297066) (i1 u10551491231982245282) (i2 u17693782080786384756) (i3 u9656633723982741434)))
 (define-constant zk-q (tuple (i0 u348699826680297066) (i1 u10551491231982245282) (i2 u16891761104669281089) (i3 u13401866920200346009)))
-(define-data-var empty-buff (buff 256) (keccak256 0))
-(define-data-var tmp int 0)
-(define-data-var result (tuple (x int) (y int)) (tuple (x 0) (y 0)))
-(define-data-var tmp-point (tuple (x int) (y int)) (tuple (x 0) (y 0)))
 (define-constant iter-buff-32 (keccak256 0))
 (define-constant iter-buff-64 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
 (define-constant iter-buff-256 0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000)
@@ -12,7 +8,6 @@
 (define-constant uint64-max-limit u18446744073709551616)
 (define-constant uint256-zero (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))
 (define-constant uint256-one (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u1)))
-(define-data-var tmp-uint256 (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)) uint256-zero)
 
 (define-private (uint256-add (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))
                             (b (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))) 
@@ -325,28 +320,23 @@
                                     (ok (tuple (x x) (y (uint256-sub yt (get y p1)))))))))))
             ))))
 
-;; (define-private (mul-bit (b (buff 1))) 
-;; (begin
-;;     (if (is-eq (mod (var-get tmp) 2) 1)
-;;         (var-set result 
-;;                 (unwrap-panic (ecc-add 
-;;                     (var-get result) 
-;;                     (var-get tmp-point))))
-;;         false
-;;         )
-;;     (var-set tmp-point 
-;;         (unwrap-panic (ecc-add 
-;;             (var-get tmp-point) 
-;;             (var-get tmp-point))))
-;;     (var-set tmp 
-;;         (/ (var-get tmp) 2)) 
-;;     ))
+(define-private (mul-bit (b (buff 1))
+                        (data (tuple (s uint) 
+                                (p (tuple (x (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (y (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))))
+                                (r (tuple (x (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (y (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))))))
+) 
+(tuple 
+    (r (if (is-eq (mod (get s data) u2) u1)
+        (unwrap-panic (ecc-add 
+            (get r data) 
+            (get p data)))
+            (get r data)))
+    (p (unwrap-panic (ecc-add 
+            (get p data) 
+            (get p data))))
+    (s (/ (get s data) u2))))
 
-;; (define-public (ecc-mul (p (tuple (x int) (y int)))
-;;                         (scalar int))
-;; (begin (var-set tmp scalar)
-;;     (var-set result (tuple (x 0) (y 0)))
-;;     (var-set tmp-point p)
-;;     (map mul-bit 
-;;         (var-get empty-buff))
-;;         (ok (var-get result))))
+(define-public (ecc-mul (p (tuple (x (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))) (y (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint)))))
+                        (scalar uint))
+    (ok (get r (fold mul-bit 
+        iter-buff-32 (tuple (s scalar) (p p) (r (tuple (x uint256-zero) (y uint256-zero))))))))
