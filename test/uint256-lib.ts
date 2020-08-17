@@ -306,7 +306,7 @@ describe("big-uint contract test suite", () => {
 
       const query = bigIntClient.createQuery({
         method: {
-          name: "uint256-lshift-1-overflow",
+          name: "uint256-lshift-1",
           args: [hexToUint256(a)],
         },
       });

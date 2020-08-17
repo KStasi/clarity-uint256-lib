@@ -121,7 +121,7 @@
             (ok uint256-zero))
         ))
 
-(define-public (uint256-lshift-1-overflow (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
+(define-public (uint256-lshift-1 (a (tuple (i0 uint) (i1 uint) (i2 uint) (i3 uint))))
     (let ((r u2))
         (let ((i0 (get i0 a)))
             (let ((i1 (+ (* (mod i0 r) uint64-max-limit) (get i1 a))))
