@@ -7,7 +7,7 @@ import {
 import { assert } from "chai";
 import { hexToUint256 } from "./utils";
 
-describe("big-uint contract test suite", () => {
+describe("uint256-lib contract test suite", () => {
   let bigIntClient: Client;
   let provider: Provider;
 
@@ -24,12 +24,12 @@ describe("big-uint contract test suite", () => {
     await bigIntClient.checkContract();
   });
 
-  describe("deploying an instance of the contract", () => {
+  describe("deploying an instance of the uint256-lib contract", () => {
     before(async () => {
       await bigIntClient.deployContract();
     });
 
-    it("should return valid result for add", async () => {
+    it("should return valid result for uint256 addition", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b =
@@ -48,7 +48,7 @@ describe("big-uint contract test suite", () => {
         "(ok (tuple (i0 u22168182363412555861) (i1 u11750387825554622112) (i2 u12406839112777703762) (i3 u10559448773639399839)))"
       );
     });
-    it("should return valid result for sub", async () => {
+    it("should return valid result for uint256 substraction", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b =
@@ -66,7 +66,7 @@ describe("big-uint contract test suite", () => {
         "(ok (tuple (i0 u3158413062041684229) (i1 u11566688074520678948) (i2 u6940689772059988022) (i3 u5867674202036624031)))"
       );
     });
-    it("should return valid result for sub", async () => {
+    it("should return valid result for uint192 substraction", async () => {
       let a = "1805be729eafb6751f92624433378e6286401d81af2e18c4";
       let b = "1805be729eafb674f9cbf0c11ee485fa6dd3bae110df0800";
       const query = bigIntClient.createQuery({
@@ -83,7 +83,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for mul", async () => {
+    it("should return valid result for uint256 multiplication", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b =
@@ -102,7 +102,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for div", async () => {
+    it("should return valid result for division uint256 by uint64", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "208e440eb14c0780";
@@ -120,7 +120,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for div", async () => {
+    it("should return valid result for division uint256 by uint128", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "25edd4eea75b888e208e440eb14c0780";
@@ -139,7 +139,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for div", async () => {
+    it("should return valid result for division uint256 by uint192", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
@@ -158,7 +158,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for mod", async () => {
+    it("should return valid result for modulo division uint256 by uint192", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "014650f9a2da5a3e25edd4eea75b888e208e440eb14c0780";
@@ -196,7 +196,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for mod", async () => {
+    it("should return valid result for modulo division uint64 by uint64 represented as uint256", async () => {
       let a = "7fffffffffffffff";
       let m = "174876e800";
 
@@ -214,7 +214,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for div", async () => {
+    it("should return valid result for for division uint64 by uint64 represented as uint256", async () => {
       let a = "6286466964a793";
       let m = "1c8abe6e9a3107";
 
@@ -229,7 +229,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u3)))");
     });
 
-    it("should return valid result for uint to uint256", async () => {
+    it("should return valid result for conversation uint128 to uint256", async () => {
       let m = "u100000000000";
 
       const query = bigIntClient.createQuery({
@@ -246,7 +246,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for unsafe rshift", async () => {
+    it("should return valid result for rshift with unchecked overflow", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "u2";
@@ -265,7 +265,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for unsafe rshift", async () => {
+    it("should return valid result for rshift with unchecked overflow", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "u128";
@@ -284,7 +284,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return valid result for unsafe rshift", async () => {
+    it("should return valid result for rshift with unchecked overflow", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "u256";
@@ -300,7 +300,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))");
     });
 
-    it("should return valid result for unsafe lshift-1", async () => {
+    it("should return valid result for lshift by 1 ", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
 
@@ -334,7 +334,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok u0)");
     });
 
-    it("should return valid result for check bit", async () => {
+    it("should return valid result for check bit in the whole number", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let aBin =
@@ -352,7 +352,7 @@ describe("big-uint contract test suite", () => {
       }
     });
 
-    it("should return valid result for check bit", async () => {
+    it("should return valid result for check last bit", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let b = "u255";
@@ -368,7 +368,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok u1)");
     });
 
-    it("should return valid result for mul-short", async () => {
+    it("should return valid result for multiplication uint256 by uint128(native type)", async () => {
       let a = "25edd4eea75b888e208e440eb14c0780";
       let b = "u11683287130199150833";
       const query = bigIntClient.createQuery({
@@ -385,7 +385,7 @@ describe("big-uint contract test suite", () => {
       );
     });
 
-    it("should return true for uint256 equal 0", async () => {
+    it("should check if uint256 is equal 0 for zero number", async () => {
       let a = "00";
       const query = bigIntClient.createQuery({
         method: {
@@ -398,7 +398,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok true)");
     });
 
-    it("should return false for uint256 bit equal 0", async () => {
+    it("should check if uint256 is equal 0 for non-zero number", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       const query = bigIntClient.createQuery({
@@ -412,7 +412,7 @@ describe("big-uint contract test suite", () => {
       assert.equal(result, "(ok false)");
     });
 
-    it("should return false for uint256 bit equal 0", async () => {
+    it("should return valid bit length for uint256", async () => {
       let a =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       const query = bigIntClient.createQuery({
@@ -428,7 +428,7 @@ describe("big-uint contract test suite", () => {
   });
 
   describe("deploying an instance of the contract", () => {
-    it("should fail substraction if result is negative", async () => {
+    it("should swap numbers if a < b during substraction", async () => {
       let b =
         "afbd122d3c1dd8ada1cb727ef867ac6286401d81af2e18c471fc6ea7e769e21f";
       let a =
