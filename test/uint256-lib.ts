@@ -14,7 +14,7 @@ describe("big-uint contract test suite", () => {
   before(async () => {
     provider = await ProviderRegistry.createProvider();
     bigIntClient = new Client(
-      "SZ2J6ZY48GV1EZ5V2V5RB9MP66SW86PYKKQ9H6DPR.uint256-lib",
+      "S1G2081040G2081040G2081040G208105NK8PE5.uint256-lib",
       "uint256-lib",
       provider
     );
@@ -180,12 +180,12 @@ describe("big-uint contract test suite", () => {
     it("should return valid result for mulmod", async () => {
       let a = "7fffffffffffffff";
       let b = "7fffffffffffffff";
-      let m = "u100000000000";
+      let m = "174876E800";
 
       const query = bigIntClient.createQuery({
         method: {
           name: "uint256-mul-mod",
-          args: [hexToUint256(a), hexToUint256(b), m],
+          args: [hexToUint256(a), hexToUint256(b), hexToUint256(m)],
         },
       });
       const receipt = await bigIntClient.submitQuery(query);
@@ -442,7 +442,10 @@ describe("big-uint contract test suite", () => {
       });
       const receipt = await bigIntClient.submitQuery(query);
       const result = Result.unwrap(receipt);
-      assert.equal(result, "(err 1)");
+      assert.equal(
+        result,
+        "(ok (tuple (i0 u3158413062041684229) (i1 u11566688074520678948) (i2 u6940689772059988022) (i3 u5867674202036624031)))"
+      );
     });
   });
 

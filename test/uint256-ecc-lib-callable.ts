@@ -8,27 +8,32 @@ import { assert } from "chai";
 import { hexToUint256 } from "./utils";
 
 describe("elliptic curve contract test suite", () => {
+  let bigIntClient: Client;
   let ellipticCurveClient: Client;
   let provider: Provider;
 
   before(async () => {
     provider = await ProviderRegistry.createProvider();
-    ellipticCurveClient = new Client(
-      "S1G2081040G2081040G2081040G208105NK8PE5.uint256-ecc-lib",
-      "uint256-ecc-lib",
+    bigIntClient = new Client(
+      "S1G2081040G2081040G2081040G208105NK8PE5.uint256-lib",
+      "uint256-lib",
       provider
     );
+    ellipticCurveClient = new Client(
+      "S1G2081040G2081040G2081040G208105NK8PE5.uint256-ecc-lib-callable",
+      "uint256-ecc-lib-callable",
+      provider
+    );
+    await bigIntClient.deployContract();
+    await ellipticCurveClient.deployContract();
   });
 
   it("should have a valid syntax", async () => {
+    await bigIntClient.checkContract();
     await ellipticCurveClient.checkContract();
   });
 
   describe("deploying an instance of the contract", () => {
-    before(async () => {
-      await ellipticCurveClient.deployContract();
-    });
-
     it("should return valid result for typical cases", async () => {
       let a =
         "0fd5b4919e42654e16e88cc9c09948162c8fdb854073636a09785da425435a47";

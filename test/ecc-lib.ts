@@ -13,7 +13,7 @@ describe("elliptic curve contract test suite", () => {
   before(async () => {
     provider = await ProviderRegistry.createProvider();
     ellipticCurveClient = new Client(
-      "SP3GWX3NE58KXHESRYE4DYQ1S31PQJTCRXB3PE9SB.ecc-lib",
+      "S1G2081040G2081040G2081040G208105NK8PE5.ecc-lib",
       "ecc-lib",
       provider
     );
