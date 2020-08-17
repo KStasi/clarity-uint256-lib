@@ -34,7 +34,7 @@ describe("elliptic curve contract test suite", () => {
   });
 
   describe("deploying an instance of the contract", () => {
-    it("should return valid result for typical cases", async () => {
+    it("should return valid result for points addition", async () => {
       let a =
         "0fd5b4919e42654e16e88cc9c09948162c8fdb854073636a09785da425435a47";
       let b =
@@ -145,10 +145,8 @@ describe("elliptic curve contract test suite", () => {
         "(ok (tuple (x (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0))) (y (tuple (i0 u0) (i1 u0) (i2 u0) (i3 u0)))))"
       );
     });
-  });
 
-  describe("deploying an instance of the contract", () => {
-    it("should return valid result for typical cases", async () => {
+    it("should return valid result for multiplication", async () => {
       let a = "02";
       let b = "01";
 
