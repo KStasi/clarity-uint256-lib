@@ -199,3 +199,11 @@ Working with **Clarity** I felt need in some syntactic sugar and standarts that 
 - Code style standart. It's not clear how to indent and wrap code to make readable for others. For instance, Golang has such a utill as `fmt` that solves the issue by formating code and teach everybody write standartized code.
 
 - Better docs and tutorials.
+
+- Developer-friendly deployment from [UI](https://testnet-explorer.blockstack.org/sandbox). There is no way to load or save the contract code on sandbox(edditing the samples is the only option).
+
+- Expand deployment fail reasons. The message is not really helpful:
+
+```
+This transaction did not succeed because the transaction was aborted during its execution.
+```
